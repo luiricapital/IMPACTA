@@ -91,10 +91,87 @@
 
     .font-display { font-family: 'Outfit', sans-serif; }
 
-    /* Lime radial glow */
-    .gold-radial {
-      background: radial-gradient(ellipse 70% 50% at 30% 0%, rgba(226,85,31,0.09) 0%, transparent 65%),
-                  radial-gradient(ellipse 40% 30% at 80% 80%, rgba(226,85,31,0.04) 0%, transparent 60%);
+    /* Gradient blob animation — hero background */
+    .gold-radial { background: transparent; }
+
+    @keyframes moveVertical {
+      0%   { transform: translateY(-50%); }
+      50%  { transform: translateY(50%); }
+      100% { transform: translateY(-50%); }
+    }
+    @keyframes moveInCircle {
+      0%   { transform: rotate(0deg); }
+      50%  { transform: rotate(180deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes moveHorizontal {
+      0%   { transform: translateX(-50%) translateY(-10%); }
+      50%  { transform: translateX(50%)  translateY(10%); }
+      100% { transform: translateX(-50%) translateY(-10%); }
+    }
+
+    .hero-gradient-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      /* diagonal gradient from deep blue to near-black-orange */
+      background: linear-gradient(40deg, rgb(7,8,20), rgb(12,7,10));
+    }
+
+    .hero-blobs {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: url(#heroBlur) blur(40px);
+    }
+
+    .hero-blob {
+      position: absolute;
+      width: 80%;
+      height: 80%;
+      top: calc(50% - 40%);
+      left: calc(50% - 40%);
+      border-radius: 50%;
+      mix-blend-mode: hard-light;
+      opacity: 1;
+    }
+    .hero-blob-1 {
+      background: radial-gradient(circle at center, rgba(36,81,163,1) 0%, rgba(36,81,163,0) 50%) no-repeat;
+      transform-origin: center center;
+      animation: moveVertical 30s ease infinite;
+    }
+    .hero-blob-2 {
+      background: radial-gradient(circle at center, rgba(125,53,119,0.8) 0%, rgba(125,53,119,0) 50%) no-repeat;
+      transform-origin: calc(50% - 400px);
+      animation: moveInCircle 20s reverse infinite;
+    }
+    .hero-blob-3 {
+      background: radial-gradient(circle at center, rgba(226,85,31,0.8) 0%, rgba(226,85,31,0) 50%) no-repeat;
+      transform-origin: calc(50% + 400px);
+      animation: moveInCircle 40s linear infinite;
+    }
+    .hero-blob-4 {
+      background: radial-gradient(circle at center, rgba(36,81,163,0.8) 0%, rgba(36,81,163,0) 50%) no-repeat;
+      transform-origin: calc(50% - 200px);
+      animation: moveHorizontal 40s ease infinite;
+      opacity: 0.6;
+    }
+    .hero-blob-5 {
+      background: radial-gradient(circle at center, rgba(125,53,119,0.8) 0%, rgba(125,53,119,0) 50%) no-repeat;
+      transform-origin: calc(50% - 800px) calc(50% + 800px);
+      animation: moveInCircle 20s ease infinite;
+    }
+    .hero-blob-pointer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: -50%;
+      left: -50%;
+      background: radial-gradient(circle at center, rgba(226,85,31,0.6) 0%, rgba(226,85,31,0) 50%) no-repeat;
+      mix-blend-mode: hard-light;
+      opacity: 0.7;
+      pointer-events: none;
     }
 
     /* Animated entry */
@@ -311,7 +388,7 @@
 
     /* Responsive */
     @media (max-width: 767px) {
-      .pricing-grid { grid-template-columns: 1fr !important; }
+      .pricing-grid { grid-template-columns: 1fr !important; max-width: 100% !important; }
       .services-grid { grid-template-columns: 1fr !important; }
       .stats-grid { grid-template-columns: 1fr 1fr !important; }
     }
@@ -444,14 +521,33 @@
 <!-- ============================================================
   HERO
 ============================================================ -->
-<section style="min-height:100dvh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding-top:80px;" class="gold-radial">
+<section id="hero-section" style="min-height:100dvh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding-top:80px;" class="gold-radial">
 
-  <!-- Background grid lines -->
-  <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(226,85,31,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(226,85,31,0.03) 1px,transparent 1px);background-size:80px 80px;"></div>
+  <!-- SVG goo filter -->
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;">
+    <defs>
+      <filter id="heroBlur">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo"/>
+        <feBlend in="SourceGraphic" in2="goo"/>
+      </filter>
+    </defs>
+  </svg>
 
-  <!-- Large gold glow blob -->
-  <div aria-hidden="true" style="position:absolute;top:-120px;right:-80px;width:600px;height:600px;background:radial-gradient(circle,rgba(226,85,31,0.07) 0%,transparent 70%);pointer-events:none;"></div>
-  <div aria-hidden="true" style="position:absolute;bottom:-80px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(125,53,119,0.06) 0%,transparent 70%);pointer-events:none;"></div>
+  <!-- Animated gradient blobs -->
+  <div class="hero-gradient-container" aria-hidden="true">
+    <div class="hero-blobs">
+      <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+      <div class="hero-blob hero-blob-3"></div>
+      <div class="hero-blob hero-blob-4"></div>
+      <div class="hero-blob hero-blob-5"></div>
+      <div class="hero-blob-pointer" id="hero-pointer"></div>
+    </div>
+  </div>
+
+  <!-- Subtle grid on top -->
+  <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:1;"></div>
 
   <div style="max-width:1280px;margin:0 auto;padding:80px 24px 80px;width:100%;position:relative;z-index:1;">
     <div style="display:grid;grid-template-columns:1fr;gap:56px;align-items:center;" class="lg:grid-cols-2">
@@ -762,21 +858,22 @@
           <button id="btn-monthly" class="active" aria-pressed="true">Mensual</button>
           <button id="btn-yearly" aria-pressed="false">Anual</button>
         </div>
-        <span class="save-badge">Ahorra 15% anual</span>
+        <span class="save-badge">Ahorra 17% anual</span>
       </div>
     </div>
 
-    <div class="pricing-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:start;">
+    <div class="pricing-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;max-width:960px;margin:0 auto;">
 
-      <!-- BASICO -->
+      <!-- BÁSICO -->
       <div class="pricing-card reveal reveal-delay-1">
         <div>
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A8A8E;margin-bottom:8px;">Starter</div>
-          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px;">
-            <span class="font-display price-val" data-plan="basico" style="font-size:2rem;font-weight:900;color:#e8f0ec;line-height:1;">RD$30k</span>
-            <span style="font-size:0.8rem;color:#7A8A8E;">/mes</span>
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A8A8E;margin-bottom:8px;">Básico</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;">
+            <span class="font-display price-val" data-monthly="RD$35,000" data-yearly="RD$29,050" style="font-size:2.1rem;font-weight:900;color:#e8f0ec;line-height:1;transition:opacity 0.2s ease,transform 0.2s ease;">RD$35,000</span>
           </div>
-          <p style="font-size:0.78rem;color:#7A8A8E;line-height:1.5;margin-bottom:20px;">Para micro-influencers construyendo su marca personal. Contenido profesional desde el primer mes.</p>
+          <div class="price-period" style="font-size:0.8rem;color:#7A8A8E;margin-bottom:4px;">/mes</div>
+          <div class="price-annual-note" style="font-size:0.75rem;color:#7A8A8E;min-height:18px;display:none;">RD$348,600 facturado anualmente</div>
+          <p style="font-size:0.78rem;color:#7A8A8E;line-height:1.5;margin-bottom:20px;margin-top:12px;">Para micro-influencers construyendo su marca personal desde el primer mes.</p>
         </div>
 
         <div style="height:1px;background:#1C1F23;"></div>
@@ -800,66 +897,25 @@
           </li>
         </ul>
 
-        <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20el%20plan%20Starter." class="btn-secondary" style="width:100%;justify-content:center;" target="_blank" rel="noopener">
-          Empezar con Starter
+        <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20el%20plan%20Basico." class="btn-secondary" style="width:100%;justify-content:center;" target="_blank" rel="noopener">
+          Empezar con Básico
         </a>
       </div>
 
-      <!-- PRO -->
-      <div class="pricing-card reveal reveal-delay-2">
-        <div>
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A8A8E;margin-bottom:8px;">Creator</div>
-          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px;">
-            <span class="font-display price-val" data-plan="pro" style="font-size:2rem;font-weight:900;color:#e8f0ec;line-height:1;">RD$60k</span>
-            <span style="font-size:0.8rem;color:#7A8A8E;">/mes</span>
-          </div>
-          <p style="font-size:0.78rem;color:#7A8A8E;line-height:1.5;margin-bottom:20px;">Para creadores mid-tier listos para profesionalizar su imagen y empezar a atraer marcas.</p>
-        </div>
-
-        <div style="height:1px;background:#1C1F23;"></div>
-
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
-            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Sesion foto completa
-          </li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
-            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            4 a 6 Reels o TikToks editados
-          </li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
-            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Identidad visual completa
-          </li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
-            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Estrategia de contenido mensual
-          </li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
-            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            1 revision mensual incluida
-          </li>
-        </ul>
-
-        <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20el%20plan%20Pro." class="btn-secondary" style="width:100%;justify-content:center;" target="_blank" rel="noopener">
-          Empezar con Pro
-        </a>
-      </div>
-
-      <!-- PREMIUM — featured -->
-      <div class="pricing-card featured reveal reveal-delay-3" style="position:relative;">
-        <!-- Top badge -->
+      <!-- ESTÁNDAR — featured -->
+      <div class="pricing-card featured reveal reveal-delay-2" style="position:relative;">
         <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);">
           <span class="tag-gold">Mas popular</span>
         </div>
 
         <div style="padding-top:8px;">
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#e2551f;margin-bottom:8px;">Influencer</div>
-          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px;">
-            <span class="font-display price-val" data-plan="premium" style="font-size:2rem;font-weight:900;color:#e2551f;line-height:1;">RD$100k</span>
-            <span style="font-size:0.8rem;color:#7A8A8E;">/mes</span>
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#e2551f;margin-bottom:8px;">Estándar</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;">
+            <span class="font-display price-val" data-monthly="RD$50,000" data-yearly="RD$41,500" style="font-size:2.1rem;font-weight:900;color:#e2551f;line-height:1;transition:opacity 0.2s ease,transform 0.2s ease;">RD$50,000</span>
           </div>
-          <p style="font-size:0.78rem;color:#7A8A8E;line-height:1.5;margin-bottom:20px;">Para influencers con audiencia activa que quieren produccion seria y brand deals consistentes.</p>
+          <div class="price-period" style="font-size:0.8rem;color:#7A8A8E;margin-bottom:4px;">/mes</div>
+          <div class="price-annual-note" style="font-size:0.75rem;color:#e2551f;opacity:0.7;min-height:18px;display:none;">RD$498,000 facturado anualmente</div>
+          <p style="font-size:0.78rem;color:#7A8A8E;line-height:1.5;margin-bottom:20px;margin-top:12px;">Para creadores listos para profesionalizar su imagen y empezar a atraer marcas.</p>
         </div>
 
         <div style="height:1px;background:rgba(226,85,31,0.2);"></div>
@@ -867,39 +923,41 @@
         <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#C8D4D8;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Produccion ilimitada de fotos
+            Sesion foto completa
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#C8D4D8;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            8 a 12 Reels o TikToks por mes
+            4 a 6 Reels o TikToks editados
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#C8D4D8;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Sitio web personal incluido
+            Identidad visual completa
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#C8D4D8;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Meta Ads para crecimiento
+            Estrategia de contenido mensual
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#C8D4D8;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            2 a 4 sesiones mensuales
+            1 revision mensual incluida
           </li>
         </ul>
 
-        <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20el%20plan%20Influencer." class="btn-primary" style="width:100%;justify-content:center;" target="_blank" rel="noopener">
-          Empezar con Influencer
+        <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20el%20plan%20Estandar." class="btn-primary" style="width:100%;justify-content:center;" target="_blank" rel="noopener">
+          Empezar con Estándar
         </a>
       </div>
 
-      <!-- ELITE -->
-      <div class="pricing-card reveal reveal-delay-4">
+      <!-- PREMIUM -->
+      <div class="pricing-card reveal reveal-delay-3">
         <div>
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A8A8E;margin-bottom:8px;">Brand Ambassador</div>
-          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px;">
-            <span class="font-display price-val" data-plan="elite" style="font-size:2rem;font-weight:900;color:#e8f0ec;line-height:1;">RD$150k+</span>
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A8A8E;margin-bottom:8px;">Premium</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;">
+            <span class="font-display price-val" data-monthly="RD$75,000" data-yearly="RD$62,250" style="font-size:2.1rem;font-weight:900;color:#e8f0ec;line-height:1;transition:opacity 0.2s ease,transform 0.2s ease;">RD$75,000</span>
           </div>
-          <p style="font-size:0.78rem;color:#7A8A8E;line-height:1.5;margin-bottom:20px;">Para mega-influencers y figuras publicas que necesitan a IMPACTA como su departamento de contenido dedicado.</p>
+          <div class="price-period" style="font-size:0.8rem;color:#7A8A8E;margin-bottom:4px;">/mes</div>
+          <div class="price-annual-note" style="font-size:0.75rem;color:#7A8A8E;min-height:18px;display:none;">RD$747,000 facturado anualmente</div>
+          <p style="font-size:0.78rem;color:#7A8A8E;line-height:1.5;margin-bottom:20px;margin-top:12px;">Para influencers con audiencia activa que quieren produccion seria y brand deals consistentes.</p>
         </div>
 
         <div style="height:1px;background:#1C1F23;"></div>
@@ -907,28 +965,28 @@
         <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Produccion de contenido sin limite
+            Produccion ilimitada de fotos
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Videos y Reels semanales
+            8 a 12 Reels o TikToks por mes
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Manejo completo de marca personal
+            Sitio web personal incluido
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Soporte y comunicacion prioritaria
+            Meta Ads para crecimiento
           </li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:0.82rem;color:#7A8A8E;line-height:1.5;">
             <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Estrategia personalizada de crecimiento
+            2 a 4 sesiones mensuales
           </li>
         </ul>
 
-        <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20el%20plan%20Brand%20Ambassador." class="btn-secondary" style="width:100%;justify-content:center;" target="_blank" rel="noopener">
-          Hablar del Ambassador
+        <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20el%20plan%20Premium." class="btn-secondary" style="width:100%;justify-content:center;" target="_blank" rel="noopener">
+          Empezar con Premium
         </a>
       </div>
 
@@ -1186,13 +1244,10 @@
 
   // ── Pricing billing toggle ──────────────────────────────────────
   (function() {
-    const prices = {
-      monthly: { basico: 'RD$30k', pro: 'RD$60k', premium: 'RD$100k', elite: 'RD$150k+' },
-      yearly:  { basico: 'RD$25k', pro:  'RD$51k', premium:  'RD$85k', elite: 'RD$128k+' },
-    };
     const btnM = document.getElementById('btn-monthly');
     const btnY = document.getElementById('btn-yearly');
     const priceEls = document.querySelectorAll('.price-val');
+    const annualNotes = document.querySelectorAll('.price-annual-note');
     let yearly = false;
 
     function switchTo(toYearly) {
@@ -1200,20 +1255,44 @@
       yearly = toYearly;
       btnM.classList.toggle('active', !yearly);
       btnY.classList.toggle('active', yearly);
-      btnM.setAttribute('aria-pressed', !yearly);
-      btnY.setAttribute('aria-pressed', yearly);
-      const set = yearly ? prices.yearly : prices.monthly;
+      btnM.setAttribute('aria-pressed', String(!yearly));
+      btnY.setAttribute('aria-pressed', String(yearly));
+
       priceEls.forEach(el => {
         el.classList.add('switching');
         setTimeout(() => {
-          el.textContent = set[el.dataset.plan];
+          el.textContent = yearly ? el.dataset.yearly : el.dataset.monthly;
           el.classList.remove('switching');
         }, 190);
+      });
+
+      annualNotes.forEach(note => {
+        note.style.display = yearly ? 'block' : 'none';
       });
     }
 
     if (btnM) btnM.addEventListener('click', () => switchTo(false));
     if (btnY) btnY.addEventListener('click', () => switchTo(true));
+  })();
+
+  // ── Hero gradient pointer ────────────────────────────────────────
+  (function() {
+    const hero = document.getElementById('hero-section');
+    const pointer = document.getElementById('hero-pointer');
+    if (!hero || !pointer) return;
+    let curX = 0, curY = 0, tgX = 0, tgY = 0;
+    let rafId;
+    hero.addEventListener('mousemove', function(e) {
+      tgX = e.clientX;
+      tgY = e.clientY;
+    }, { passive: true });
+    function move() {
+      curX += (tgX - curX) / 20;
+      curY += (tgY - curY) / 20;
+      pointer.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+      rafId = requestAnimationFrame(move);
+    }
+    move();
   })();
 </script>
 
