@@ -45,6 +45,12 @@
   </script>
 
   <style>
+    :root {
+      --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html { background: #07080A; }
@@ -188,9 +194,9 @@
       to   { opacity: 1; transform: translateX(0); }
     }
 
-    .anim-fadeup { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both; }
-    .anim-fadein { animation: fadeIn 0.6s ease both; }
-    .anim-slide  { animation: slideRight 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+    .anim-fadeup { animation: fadeUp 0.75s var(--ease-out) both; }
+    .anim-fadein { animation: fadeIn 0.6s var(--ease-out) both; }
+    .anim-slide  { animation: slideRight 0.65s var(--ease-out) both; }
 
     .delay-1 { animation-delay: 0.1s; }
     .delay-2 { animation-delay: 0.2s; }
@@ -199,22 +205,57 @@
     .delay-5 { animation-delay: 0.65s; }
 
     /* Scroll reveal */
-    /* Scroll reveal */
     .reveal {
-      transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
+      transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
     }
     .reveal.animate-out {
       opacity: 0;
-      transform: translateY(18px);
+      transform: translateY(8px);
     }
     .reveal.animate-in {
       opacity: 1 !important;
       transform: translateY(0) !important;
     }
-    .reveal-delay-1 { transition-delay: 0.08s; }
-    .reveal-delay-2 { transition-delay: 0.16s; }
-    .reveal-delay-3 { transition-delay: 0.24s; }
-    .reveal-delay-4 { transition-delay: 0.32s; }
+    .reveal-delay-1 { transition-delay: 0.05s; }
+    .reveal-delay-2 { transition-delay: 0.10s; }
+    .reveal-delay-3 { transition-delay: 0.15s; }
+    .reveal-delay-4 { transition-delay: 0.20s; }
+
+    /* Nav links */
+    .nav-link {
+      font-size: 0.875rem;
+      color: #7A8A8E;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-link:hover { color: #e8f0ec; }
+    }
+
+    /* Mobile menu — opacity-driven (not display toggle) */
+    #mobile-menu {
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+    }
+    #mobile-menu.menu-open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .mobile-nav-link {
+      padding: 12px 16px;
+      color: #7A8A8E;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: color 0.15s ease, background 0.15s ease;
+      display: block;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .mobile-nav-link:hover { color: #e8f0ec; background: #161819; }
+    }
 
     /* Nav */
     nav {
@@ -260,7 +301,7 @@
       white-space: nowrap;
     }
     .btn-primary:hover  { background: linear-gradient(100deg, #2f63c7 0%, #96407f 50%, #f4794a 100%); color: #F0F0F2; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(226,85,31,0.35), 0 4px 20px rgba(125,53,119,0.3); }
-    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-primary:active { transform: translateY(0) scale(0.97); transition: transform 80ms ease-out, box-shadow 80ms ease-out; }
     .btn-primary:focus-visible { outline: 2px solid #e2551f; outline-offset: 3px; }
 
     /* CTA button secondary */
@@ -283,7 +324,7 @@
       white-space: nowrap;
     }
     .btn-secondary:hover  { border-color: rgba(226,85,31,0.5); color: #f4794a; transform: translateY(-1px); }
-    .btn-secondary:active { transform: translateY(0) scale(0.98); }
+    .btn-secondary:active { transform: translateY(0) scale(0.97); transition: transform 80ms ease-out; }
     .btn-secondary:focus-visible { outline: 2px solid #e2551f; outline-offset: 3px; }
 
     /* Service card */
@@ -292,12 +333,19 @@
       border: 1px solid #1C1F23;
       border-radius: 12px;
       padding: 32px;
-      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+      transition: border-color 0.22s var(--ease-out), transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out);
+      cursor: default;
     }
-    .service-card:hover {
-      border-color: rgba(226,85,31,0.4);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(226,85,31,0.15);
+    @media (hover: hover) and (pointer: fine) {
+      .service-card:hover {
+        border-color: rgba(226,85,31,0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(226,85,31,0.15);
+      }
+    }
+    .service-card:active {
+      transform: scale(0.98);
+      transition: transform 80ms ease-out;
     }
 
     /* Pricing card */
@@ -309,21 +357,29 @@
       display: flex;
       flex-direction: column;
       gap: 24px;
-      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+      transition: border-color 0.22s var(--ease-out), transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out);
     }
-    .pricing-card:hover {
-      border-color: rgba(226,85,31,0.3);
-      transform: translateY(-2px);
+    @media (hover: hover) and (pointer: fine) {
+      .pricing-card:hover {
+        border-color: rgba(226,85,31,0.3);
+        transform: translateY(-2px);
+      }
+    }
+    .pricing-card:active {
+      transform: scale(0.98);
+      transition: transform 80ms ease-out;
     }
     .pricing-card.featured {
       background: linear-gradient(145deg, #131516, #181A1C);
       border-color: rgba(226,85,31,0.5);
       box-shadow: 0 0 0 1px rgba(226,85,31,0.18), 0 24px 64px rgba(0,0,0,0.6), 0 0 80px rgba(226,85,31,0.06);
     }
-    .pricing-card.featured:hover {
-      border-color: rgba(226,85,31,0.75);
-      transform: translateY(-3px);
-      box-shadow: 0 0 0 1px rgba(226,85,31,0.35), 0 32px 80px rgba(0,0,0,0.5);
+    @media (hover: hover) and (pointer: fine) {
+      .pricing-card.featured:hover {
+        border-color: rgba(226,85,31,0.75);
+        transform: translateY(-3px);
+        box-shadow: 0 0 0 1px rgba(226,85,31,0.35), 0 32px 80px rgba(0,0,0,0.5);
+      }
     }
 
     /* Check icon */
@@ -455,11 +511,12 @@
     /* Price value transition */
     .price-val {
       display: inline-block;
-      transition: opacity 0.18s ease, transform 0.18s ease;
+      transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out), filter 0.2s ease;
     }
     .price-val.switching {
       opacity: 0;
-      transform: translateY(-5px);
+      transform: translateY(-4px);
+      filter: blur(4px);
     }
   </style>
 </head>
@@ -479,10 +536,10 @@
 
     <!-- Desktop nav links -->
     <div id="nav-desktop-links" style="align-items:center;gap:36px;display:flex;">
-      <a href="#servicios" style="font-size:0.875rem;color:#7A8A8E;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#e8f0ec'" onmouseout="this.style.color='#7A8A8E'">Servicios</a>
-      <a href="#como-funciona" style="font-size:0.875rem;color:#7A8A8E;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#e8f0ec'" onmouseout="this.style.color='#7A8A8E'">Como funciona</a>
-      <a href="#planes" style="font-size:0.875rem;color:#7A8A8E;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#e8f0ec'" onmouseout="this.style.color='#7A8A8E'">Planes</a>
-      <a href="#contacto" style="font-size:0.875rem;color:#7A8A8E;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#e8f0ec'" onmouseout="this.style.color='#7A8A8E'">Contacto</a>
+      <a href="#servicios"    class="nav-link">Servicios</a>
+      <a href="#como-funciona" class="nav-link">Como funciona</a>
+      <a href="#planes"       class="nav-link">Planes</a>
+      <a href="#contacto"     class="nav-link">Contacto</a>
     </div>
 
     <!-- Desktop CTA -->
@@ -504,11 +561,11 @@
 </nav>
 
 <!-- Mobile menu — outside nav to avoid layout bleed -->
-<div id="mobile-menu" style="display:none;position:fixed;top:80px;left:0;right:0;z-index:49;background:rgba(7,8,10,0.97);backdrop-filter:blur(20px);border-bottom:1px solid #1C1F23;flex-direction:column;padding:24px;gap:4px;">
-  <a href="#servicios" onclick="closeMobileMenu()" style="padding:12px 16px;color:#7A8A8E;text-decoration:none;border-radius:6px;font-size:0.9rem;transition:color 0.2s,background 0.2s;" onmouseover="this.style.color='#e8f0ec';this.style.background='#161819'" onmouseout="this.style.color='#7A8A8E';this.style.background='transparent'">Servicios</a>
-  <a href="#como-funciona" onclick="closeMobileMenu()" style="padding:12px 16px;color:#7A8A8E;text-decoration:none;border-radius:6px;font-size:0.9rem;transition:color 0.2s,background 0.2s;" onmouseover="this.style.color='#e8f0ec';this.style.background='#161819'" onmouseout="this.style.color='#7A8A8E';this.style.background='transparent'">Como funciona</a>
-  <a href="#planes"    onclick="closeMobileMenu()" style="padding:12px 16px;color:#7A8A8E;text-decoration:none;border-radius:6px;font-size:0.9rem;transition:color 0.2s,background 0.2s;" onmouseover="this.style.color='#e8f0ec';this.style.background='#161819'" onmouseout="this.style.color='#7A8A8E';this.style.background='transparent'">Planes</a>
-  <a href="#contacto"  onclick="closeMobileMenu()" style="padding:12px 16px;color:#7A8A8E;text-decoration:none;border-radius:6px;font-size:0.9rem;transition:color 0.2s,background 0.2s;" onmouseover="this.style.color='#e8f0ec';this.style.background='#161819'" onmouseout="this.style.color='#7A8A8E';this.style.background='transparent'">Contacto</a>
+<div id="mobile-menu" style="display:flex;position:fixed;top:80px;left:0;right:0;z-index:49;background:rgba(7,8,10,0.97);backdrop-filter:blur(20px);border-bottom:1px solid #1C1F23;flex-direction:column;padding:24px;gap:4px;" aria-hidden="true">
+  <a href="#servicios"    onclick="closeMobileMenu()" class="mobile-nav-link">Servicios</a>
+  <a href="#como-funciona" onclick="closeMobileMenu()" class="mobile-nav-link">Como funciona</a>
+  <a href="#planes"       onclick="closeMobileMenu()" class="mobile-nav-link">Planes</a>
+  <a href="#contacto"     onclick="closeMobileMenu()" class="mobile-nav-link">Contacto</a>
   <div style="margin-top:12px;">
     <a href="https://wa.me/18099999999?text=Hola%20IMPACTA%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20planes." class="btn-primary" target="_blank" rel="noopener" style="width:100%;justify-content:center;">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -1098,31 +1155,46 @@
   // Mobile menu
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
-  hamburger.addEventListener('click', () => {
-    const isOpen = mobileMenu.style.display === 'flex';
-    mobileMenu.style.display = isOpen ? 'none' : 'flex';
-    hamburger.setAttribute('aria-expanded', !isOpen);
-  });
+  let menuOpen = false;
+
+  function openMobileMenu() {
+    menuOpen = true;
+    mobileMenu.classList.add('menu-open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    hamburger.setAttribute('aria-expanded', 'true');
+  }
   function closeMobileMenu() {
-    mobileMenu.style.display = 'none';
+    menuOpen = false;
+    mobileMenu.classList.remove('menu-open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
     hamburger.setAttribute('aria-expanded', 'false');
   }
-  // Close on outside click
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menuOpen ? closeMobileMenu() : openMobileMenu();
+  });
   document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target)) closeMobileMenu();
+    if (menuOpen && !nav.contains(e.target) && !mobileMenu.contains(e.target)) closeMobileMenu();
   });
 
-  // Scroll reveal — IntersectionObserver adds animate-out then animate-in
+  // Scroll reveal with stagger for grid children
   const reveals = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
+        // Stagger direct children of grids when the grid itself enters
+        const children = entry.target.querySelectorAll(':scope > .service-card, :scope > .pricing-card, :scope > .stat-card');
+        if (children.length > 1) {
+          children.forEach((child, i) => {
+            child.style.transitionDelay = `${i * 55}ms`;
+          });
+        }
         entry.target.classList.remove('animate-out');
         entry.target.classList.add('animate-in');
         io.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.06 });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
   // Only animate elements below the initial fold
   reveals.forEach(el => {
@@ -1134,6 +1206,49 @@
     }
     io.observe(el);
   });
+
+  // Counter animation for stat numbers
+  function animateCounter(el, target, suffix, duration) {
+    const start = performance.now();
+    const isFloat = String(target).includes('.');
+    function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = isFloat ? (target * eased).toFixed(0) : Math.round(target * eased);
+      el.textContent = suffix + val + (el.dataset.suffix || '');
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = suffix + target + (el.dataset.suffix || '');
+    }
+    requestAnimationFrame(step);
+  }
+
+  const statNums = [
+    { selector: null, prefix: '', raw: '4x', suffix: 'x', value: 4 },
+    { selector: null, prefix: '+', raw: '+70%', suffix: '%', value: 70 },
+    { selector: null, prefix: '', raw: '48h', suffix: 'h', value: 48 },
+    { selector: null, prefix: '', raw: '100%', suffix: '%', value: 100 },
+  ];
+
+  const statEls = document.querySelectorAll('.stat-card .font-display');
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const text = el.textContent.trim();
+        const match = text.match(/^([+]?)(\d+)([x%h]?)$/);
+        if (match) {
+          const prefix = match[1];
+          const value = parseInt(match[2]);
+          const sfx = match[3];
+          el.dataset.suffix = sfx;
+          animateCounter(el, value, prefix, 900);
+        }
+        statObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  statEls.forEach(el => statObserver.observe(el));
 
   // Responsive: nav + grids
   function applyResponsive() {
@@ -1162,7 +1277,7 @@
     // Pricing
     const pricingGrid = document.querySelector('.pricing-grid');
     if (pricingGrid) {
-      pricingGrid.style.gridTemplateColumns = isMobile ? '1fr' : window.innerWidth < 1024 ? '1fr 1fr' : 'repeat(4,1fr)';
+      pricingGrid.style.gridTemplateColumns = isMobile ? '1fr' : window.innerWidth < 768 ? '1fr' : 'repeat(3,1fr)';
     }
     // Value pillars
     const pillars = document.querySelector('[style*="grid-template-columns:repeat(3,1fr)"]');
