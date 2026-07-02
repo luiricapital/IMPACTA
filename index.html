@@ -469,6 +469,61 @@
       .tw-cursor { animation: none; }
     }
 
+    /* ── Container Scroll Animation ─────────────────────────────── */
+    .csa-outer {
+      /* Tall container gives scroll room for the transform */
+      height: 70rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .csa-sticky {
+      position: sticky;
+      top: 80px; /* below fixed nav */
+      height: calc(100vh - 80px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 32px;
+      width: 100%;
+    }
+    .csa-title {
+      /* Title slides upward as scroll progresses */
+      will-change: transform;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .csa-card-wrap {
+      /* Perspective parent */
+      perspective: 900px;
+      width: 100%;
+      max-width: 960px;
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+    }
+    .csa-card {
+      /* The rotating card */
+      width: 100%;
+      transform-origin: top center;
+      will-change: transform;
+      border-radius: 20px;
+      overflow: hidden;
+      /* initial tilted state — JS will update on scroll */
+      transform: rotateX(20deg) scale(0.9);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .csa-card  { transform: none !important; }
+      .csa-title { transform: none !important; }
+    }
+    @media (max-width: 767px) {
+      .csa-outer  { height: auto; }
+      .csa-sticky { position: relative; top: 0; height: auto; }
+      .csa-card   { transform: none !important; }
+    }
+
     /* Pricing billing toggle */
     .billing-toggle {
       display: inline-flex;
@@ -879,32 +934,42 @@
 
 
 <!-- ============================================================
-  PLANES / PRICING
+  PLANES / PRICING — Container Scroll Animation
 ============================================================ -->
 <section id="planes" style="padding:0 24px 100px;position:relative;overflow:hidden;">
-  <!-- Subtle gold glow at center -->
+  <!-- Subtle gold glow -->
   <div aria-hidden="true" style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:300px;background:radial-gradient(ellipse,rgba(226,85,31,0.06) 0%,transparent 70%);pointer-events:none;"></div>
 
   <div style="max-width:1280px;margin:0 auto;position:relative;z-index:1;">
 
-    <div style="text-align:center;margin-bottom:64px;" class="reveal">
-      <h2 class="font-display" style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-0.025em;color:#e8f0ec;margin-bottom:16px;">
-        Elige el plan que mueve tu carrera.
-      </h2>
-      <p style="color:#7A8A8E;font-size:1rem;line-height:1.7;max-width:480px;margin:0 auto 28px;">
-        Sin contratos anuales obligatorios. Empieza donde estas hoy y escala cuando tu influencia lo exija.
-      </p>
+    <!-- Container Scroll outer (tall for scroll room) -->
+    <div class="csa-outer" id="csa-outer">
+      <div class="csa-sticky" id="csa-sticky">
 
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
-        <div class="billing-toggle" role="group" aria-label="Periodo de facturacion">
-          <button id="btn-monthly" class="active" aria-pressed="true">Mensual</button>
-          <button id="btn-yearly" aria-pressed="false">Anual</button>
+        <!-- Title — slides up on scroll -->
+        <div class="csa-title reveal" id="csa-title">
+          <h2 class="font-display" style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-0.025em;color:#e8f0ec;margin-bottom:16px;">
+            Elige el plan que mueve tu carrera.
+          </h2>
+          <p style="color:#7A8A8E;font-size:1rem;line-height:1.7;max-width:480px;margin:0 auto 28px;">
+            Sin contratos anuales obligatorios. Empieza donde estas hoy y escala cuando tu influencia lo exija.
+          </p>
+          <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+            <div class="billing-toggle" role="group" aria-label="Periodo de facturacion">
+              <button id="btn-monthly" class="active" aria-pressed="true">Mensual</button>
+              <button id="btn-yearly" aria-pressed="false">Anual</button>
+            </div>
+            <span class="save-badge">Ahorra 17% anual</span>
+          </div>
         </div>
-        <span class="save-badge">Ahorra 17% anual</span>
-      </div>
-    </div>
 
-    <div class="pricing-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;max-width:900px;margin:0 auto;width:100%;">
+        <!-- Card — rotates from tilted to flat on scroll -->
+        <div class="csa-card-wrap">
+          <div class="csa-card" id="csa-card">
+            <!-- Inner content has its own padding -->
+            <div style="background:#07080A;padding:32px 28px;">
+
+    <div class="pricing-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;width:100%;">
 
       <!-- BÁSICO -->
       <div class="pricing-card reveal reveal-delay-1">
@@ -1034,10 +1099,18 @@
 
     </div>
 
-    <!-- Payment note -->
-    <p style="text-align:center;margin-top:28px;font-size:0.82rem;color:#7A8A8E;" class="reveal">
-      Planes de pago flexibles disponibles. Consulta con nuestro equipo para opciones personalizadas.
-    </p>
+            <!-- Payment note -->
+            <p style="text-align:center;margin-top:24px;font-size:0.82rem;color:#7A8A8E;">
+              Planes de pago flexibles disponibles. Consulta con nuestro equipo para opciones personalizadas.
+            </p>
+
+            </div><!-- /inner padding -->
+          </div><!-- /csa-card -->
+        </div><!-- /csa-card-wrap -->
+
+      </div><!-- /csa-sticky -->
+    </div><!-- /csa-outer -->
+
   </div>
 </section>
 
@@ -1373,6 +1446,43 @@
 
     if (btnM) btnM.addEventListener('click', () => switchTo(false));
     if (btnY) btnY.addEventListener('click', () => switchTo(true));
+  })();
+
+  // ── Container Scroll Animation (pricing) ────────────────────────
+  (function() {
+    const outer  = document.getElementById('csa-outer');
+    const card   = document.getElementById('csa-card');
+    const title  = document.getElementById('csa-title');
+    if (!outer || !card || !title) return;
+
+    // Skip on mobile — CSS already disables the effect
+    const mq = window.matchMedia('(max-width: 767px)');
+    if (mq.matches) return;
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
+
+    function onScroll() {
+      const rect   = outer.getBoundingClientRect();
+      const viewH  = window.innerHeight;
+      // progress 0 → 1: 0 when top of outer hits viewport top, 1 when bottom of outer hits viewport bottom
+      const total  = rect.height - viewH;
+      const scrolled = -rect.top;
+      const progress = clamp(scrolled / total, 0, 1);
+
+      // rotateX: 20deg → 0deg
+      const rotate = lerp(20, 0, progress);
+      // scale: 0.9 → 1
+      const scale  = lerp(0.9, 1, progress);
+      // Title translate up: 0 → -60px
+      const titleY = lerp(0, -60, progress);
+
+      card.style.transform  = `rotateX(${rotate}deg) scale(${scale})`;
+      title.style.transform = `translateY(${titleY}px)`;
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // set initial state
   })();
 
   // ── Hero gradient pointer ────────────────────────────────────────
